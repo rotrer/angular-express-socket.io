@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" ng-app="App">
+<head>
+	<meta charset="UTF-8">
+	<title>Base</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Socket.io -->
+	<script src="/socket.io/socket.io.js"></script>
+
+	<!-- Libs Angular -->
+	<script src="/static/angular/angular.min.js"></script>
+	<script src="/static/angular-route/angular-route.min.js"></script>
+	<script src="/static/angular-socket-io/socket.js"></script>
+	<script src="/static/jquery/dist/jquery.min.js"></script>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap-theme.min.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
+	
+	<!-- App Angular -->
+	<script src="/js/apps.js"></script>
+	<script src="/js/controllers.js"></script>
+	<script src="/js/services.js"></script>
+	
+	
+	<!--
+	<script>
+		var socket = io.connect('http://localhost:1337');
+		socket.on('news', function (data) {
+			console.log(data);
+			socket.emit('my other event', { my: 'data' });
+		});
+	</script>
+	-->
+
+
+
+
+	
+</head>
+<body>
+	<div class="view-container">
+		<div ng-view class="page <% pageClass %>"></div>
+	</div>
+</body>
+</html>
