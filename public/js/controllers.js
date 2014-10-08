@@ -3,19 +3,23 @@
 /* Controllers */
 angular.module('App.controllers', [])
 	.controller('homeController', function ($scope, socket) {
-		// socket.on('init', function (data) {
-		// 	$scope.name = data.name;
-		// 	$scope.users = data.users;
-		// });
+
 		socket.on('send:newcode', function (data) {
+			console.log(data);
+			$scope.showCode = true;
+			$scope.newcode = data.code;
+		});
+
+		socket.on('send:pairedComplete', function (data) {
 			console.log(data);
 		});
 
 		//new code
-		$scope.newcode = createCode();
-		socket.emit('send:newcode', {
-			newCode: $scope.newcode
-		});
+		$scope.showCode = false;
+		$scope.getCode = function(){
+			socket.emit('send:newcode');
+		}
+
 	})
 	.controller('playController', function ($scope, socket) {
 		$scope.master = {};
@@ -23,18 +27,17 @@ angular.module('App.controllers', [])
 		$scope.sendCode = function(user) {
 			$scope.master = angular.copy(user);
 			if ($scope.master !== undefined) {
-				console.log($scope.master.code);
 
 				socket.emit('send:usecode', {
 					codeToUse: $scope.master.code
 				});
-				
+
 			};
 		};
 
-		socket.on('init', function (data) {
+		// socket.on('init', function (data) {
 			
-		});
+		// });
 	});
 
 	var createCode  = function(){
