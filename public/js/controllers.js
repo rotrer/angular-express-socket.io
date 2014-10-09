@@ -2,50 +2,106 @@
 
 /* Controllers */
 angular.module('App.controllers', [])
-	.controller('homeController', function ($scope, socket) {
+	//Home Controller
+	.controller('homeController', [
+		'$scope',
+		'$timeout',
+		'$location',
+		'$window',
+		'socket',
+		function($scope, $timeout, $location, $window, socket) {
 
-		socket.on('send:newcode', function (data) {
-			console.log(data);
-			$scope.showCode = true;
-			$scope.newcode = data.code;
-		});
+			$scope.counter = 3;
+			var stopped;
+			//Listener new code
+			socket.on('send:newcode', function (data) {
+				$scope.showCode = true;
+				$scope.newcode = data.code;
+			});
 
-		socket.on('send:pairedComplete', function (data) {
-			console.log(data);
-		});
+			//Listener paired devices
+			socket.on('send:pairedComplete', function (data) {
+				if (data.complete === true) {
+					$scope.showButton = true;
+					$scope.showCode = false;
+					$scope.showIntro = true;
+					$scope.counter = 3;
+					$scope.countdown();
+				};
+			});
 
-		//new code
-		$scope.showCode = false;
-		$scope.getCode = function(){
-			socket.emit('send:newcode');
-		}
+			//Event create new code
+			$scope.getCode = function(){
+				socket.emit('send:newcode');
+			}
 
-	})
-	.controller('playController', function ($scope, socket) {
-		$scope.master = {};
-
-		$scope.sendCode = function(user) {
-			$scope.master = angular.copy(user);
-			if ($scope.master !== undefined) {
-
-				socket.emit('send:usecode', {
-					codeToUse: $scope.master.code
-				});
-
+			//Countdown
+			$scope.countdown = function() {
+				stopped = $timeout(function() {
+					$scope.counter--;
+					if ($scope.counter === 0) {
+						$timeout.cancel(stopped);
+						$scope.showPlayElement = true;
+					} else {
+						$scope.countdown();
+					};
+					
+				}, 1000);
 			};
-		};
 
-		// socket.on('init', function (data) {
-			
-		// });
-	});
+			socket.on('send:moveElementTo', function (data) {
+				jQuery('.element').css('left', data.pixels + 'px');
+			});
 
-	var createCode  = function(){
-		var text = "";
-		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		}
+	])
+	//Play Controller
+	.controller('playController', [
+		'$scope',
+		'$timeout',
+		'$location',
+		'$window',
+		'socket',
+		function($scope, $timeout, $location, $window, socket) {
+			$scope.master = {};
+			$scope.pixels = 5;
 
-		for( var i=0; i < 5; i++ )
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
+			//Event to pair device
+			$scope.sendCode = function(user) {
+				$scope.master = angular.copy(user);
+				if ($scope.master !== undefined) {
+					$scope.pixels = 5;
+					socket.emit('send:usecode', {
+						codeToUse: $scope.master.code
+					});
 
-		return text;
-	};
+				};
+			};
+
+			$scope.moveElement = function(){
+				$scope.pixels += 5;
+				socket.emit('send:moveElementFrom', {
+					codeToUse: $scope.master.code,
+					pixels: $scope.pixels
+				});
+			};
+
+			//Listener error code
+			socket.on('send:failpaired', function (data) {
+				if (data.error === true) {
+					$scope.message = 'Código mal ingresado';
+					$timeout(function(){
+						$scope.showMessage = false;
+						$timeout(function(){
+							$scope.showMessage = true;
+						}, 1500);
+					}, 500);
+				};
+			});
+
+
+			// socket.on('init', function (data) {
+				
+			// });
+		}
+	]);

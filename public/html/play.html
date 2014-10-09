@@ -3,7 +3,9 @@
     <input type="text" class="form-control" placeholder="Ingresar código" ng-model="user.code" required>
   </div>
   <button ng-click="sendCode(user)" class="btn btn-default navbar-btn">Enviar</button>
+  <button ng-click="moveElement()" class="btn btn-default navbar-btn">Mover</button>
 </form>
+<div class="message" ng-show="!showMessage">{{message}}</div>
 <style type="text/css">
   .css-form input.ng-invalid.ng-dirty {
     background-color: #FA787E;

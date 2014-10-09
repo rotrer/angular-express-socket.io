@@ -1,2 +1,29 @@
-<button ng-click="getCode()" class="btn btn-default navbar-btn">Jugar</button>
-<h2 ng-show="showCode">Code: <strong>{{ newcode }}</strong></h2>
+<button ng-show="!showButton" ng-click="getCode()" class="btn btn-default navbar-btn">Jugar</button>
+
+<div ng-show="showCode">
+	<h4>Ingresa el siguiente código en tu teléfono</h4>
+	<h2>Código: <strong>{{ newcode }}</strong></h4>
+</div>
+
+<div ng-show="showIntro">
+	<h3>El juego comenzará en: <strong>{{counter}}</strong></h3>
+</div>
+
+<div class="element" ng-show="showPlayElement">
+	Oh night long john
+</div>
+
+<style>
+	.element {
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 33%;
+		background-color: antiquewhite;
+		transition: all .2s ease;
+		width: 200px;
+		height: 200px;
+		background-color: red;
+		box-shadow: 10px 10px 5px rgba(0,0,0,.3)
+	}
+</style>
