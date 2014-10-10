@@ -5,13 +5,14 @@ var express = require('express'),
 
 var app = express();
 var server = app.listen(3000);
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server, { log: false });
 
 var publid_dir =  __dirname + '/public';
 
 app.configure(function(){
 	app.use(express.static(__dirname + '/public'));
 	app.use('/static',  express.static(__dirname + '/bower_components'));
+	app.use(express.errorHandler());
 });
 
 app.configure('development', function(){
@@ -24,5 +25,3 @@ app.get("/", function(request, response) {
 
 // Socket.io Communication
 io.sockets.on('connection', socket);
-
-console.log("Express server listening on port 3000");
